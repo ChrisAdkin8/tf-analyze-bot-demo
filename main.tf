@@ -28,6 +28,7 @@ resource "aws_ecr_repository" "app" {
 resource "aws_cloudwatch_log_group" "app" {
   name              = "/tf-analyze-bot-demo/app"
   retention_in_days = 30
+  kms_key_id        = aws_kms_key.logs.arn
 }
 
 # Seed bug #4 — CloudFront serves plain HTTP via viewer_protocol_policy.
@@ -62,4 +63,9 @@ resource "aws_cloudfront_distribution" "cdn" {
 # Rule: SEC-AWS-S3-PUBLIC-BLOCK-001 (fix_disruption: none).
 resource "aws_s3_bucket" "artifacts" {
   bucket = "tf-analyze-bot-demo-artifacts"
+  tags = {
+    Environment = "prod"
+    Owner       = "platform-team"
+    Project     = "my-project"
+  }
 }
